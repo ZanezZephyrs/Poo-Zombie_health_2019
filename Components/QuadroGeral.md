@@ -2,7 +2,7 @@
 
 Campo | Valor
 ----- | -----
-Classe | `pt.c08componentes.s20catalog.s10ds.DataSetComponent`
+Classe | `Poo-Zombie_health_2019.Components.QuadroGeral.src.quadrogeral`
 Autores | `João` e `Matheus`
 Objetivo | `Análise de dados`
 Interface | `IQuadroGeral`
