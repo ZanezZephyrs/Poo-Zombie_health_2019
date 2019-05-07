@@ -76,11 +76,11 @@ public class QuadroGeralComponent implements IQuadroGeral {
     }
 
     @Override
-    public void plotarGrafico(Map<String, Integer> dicionario) {
+    public void plotarGrafico(Map<String, Integer> ocorrencia) {
         
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
-        dicionario.keySet().forEach((valor) -> {
-            ds.addValue((double) dicionario.get(valor), "", (Comparable) valor);
+        ocorrencia.keySet().forEach((valor) -> {
+            ds.addValue((double) ocorrencia.get(valor), "", (Comparable) valor);
         });
         // cria o gráfico
         JFreeChart grafico = ChartFactory.createBarChart("Doenças X Ocorrências", "Doenças", 
