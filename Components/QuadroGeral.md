@@ -17,7 +17,7 @@ public interface IQuadroGeral {
 ## Detalhamento das Interfaces
 
 ### Interface `IQuadroGeral`
-`Analisa uma tabela de doenças e fornece a relação entre a doença e a porcentagem de ocorrência bem como a relação entre a doença e o número absoluto de ocorrência (tanto lógica quanto gráfica)`.
+Analisa uma tabela de doenças e fornece a relação entre a doença e a porcentagem de ocorrência bem como a relação entre a doença e o número absoluto de ocorrência (tanto lógica quanto gráfica).
 
 Método | Objetivo
 -------| --------
