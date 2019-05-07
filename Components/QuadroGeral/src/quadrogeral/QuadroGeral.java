@@ -34,8 +34,6 @@ public class QuadroGeral implements IQuadroGeral {
         int numPacientes = matriz.length - 1 /* não pode incluir o cabeçalho */;
         int posDiagnostico = matriz[0].length - 1;
         
-        System.out.println("numPacientes: " + numPacientes);
-        
         String doenca;
         for (int i = 1; i < matriz.length; i++) {
             doenca = matriz[i][posDiagnostico];
@@ -44,7 +42,7 @@ public class QuadroGeral implements IQuadroGeral {
                 for (int j = 1; j < matriz.length; j++)
                     if (matriz[j][posDiagnostico].equalsIgnoreCase(doenca))
                         numOcorrencias++;
-                System.out.println("Doenca: " + doenca + " | ocorr: " + numOcorrencias);
+                
                 porcentagem.put(doenca.toUpperCase(), (double) numOcorrencias/numPacientes);
             }
             numOcorrencias = 0;            
@@ -53,20 +51,40 @@ public class QuadroGeral implements IQuadroGeral {
 
         return porcentagem;
     }
+    
+    @Override
+    public Map<String, Integer> ocorrencia(String[][] matriz) {
+        Map<String, Integer> ocorrencia = new HashMap<>();
+        int numOcorrencias = 0;
+        int posDiagnostico = matriz[0].length - 1;
+        
+        String doenca;
+        for (int i = 1; i < matriz.length; i++) {
+            doenca = matriz[i][posDiagnostico];
+            
+            if (!ocorrencia.containsKey(doenca.toUpperCase())) {
+                for (int j = 1; j < matriz.length; j++)
+                    if (matriz[j][posDiagnostico].equalsIgnoreCase(doenca))
+                        numOcorrencias++;
+                ocorrencia.put(doenca.toUpperCase(), numOcorrencias);
+            }
+            numOcorrencias = 0;            
+        }
+                
+
+        return ocorrencia;
+    }
 
     @Override
-    public void plotarGrafico(String matriz[][]) {
+    public void plotarGrafico(Map<String, Integer> dicionario) {
+        
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
-        ds.addValue(40.5, "maximo", "dia 1");
-        ds.addValue(38.2, "maximo", "dia 2");
-        ds.addValue(37.3, "maximo", "dia 3");
-        ds.addValue(31.5, "maximo", "dia 4");
-        ds.addValue(35.7, "maximo", "dia 5");
-        ds.addValue(42.5, "maximo", "dia 6");
-
+        dicionario.keySet().forEach((valor) -> {
+            ds.addValue((double) dicionario.get(valor), "", (Comparable) valor);
+        });
         // cria o gráfico
-        JFreeChart grafico = ChartFactory.createBarChart("Meu Grafico", "Dia", 
-            "Valor", ds, PlotOrientation.VERTICAL, true, true, false);
+        JFreeChart grafico = ChartFactory.createBarChart("Doenças X Ocorrências", "Doenças", 
+            "Ocorrências", ds, PlotOrientation.VERTICAL, false, true, false);
         
         try {
             OutputStream arquivo = new FileOutputStream("grafico.png");
