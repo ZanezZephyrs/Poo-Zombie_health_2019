@@ -26,6 +26,7 @@ public class App {
             System.out.println(valor + " " + dic.get(valor));
         });
         
+        qg.plotarGrafico(a);
     }
     
 }
