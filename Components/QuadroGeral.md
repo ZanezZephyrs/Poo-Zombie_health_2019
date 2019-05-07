@@ -3,7 +3,7 @@
 Campo | Valor
 ----- | -----
 Classe | `Poo-Zombie_health_2019.Components.QuadroGeral.src.quadrogeral`
-Autores | `João` e `Matheus`
+Autores | `4ZHealth`
 Objetivo | `Análise de dados percentuais e do número de ocorrência das doenças`
 Interface | `IQuadroGeral`
 ~~~
