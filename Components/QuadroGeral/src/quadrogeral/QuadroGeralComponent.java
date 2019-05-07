@@ -35,13 +35,14 @@ public class QuadroGeralComponent implements IQuadroGeral {
         int posDiagnostico = matriz[0].length - 1;
         
         String doenca;
-        for (int i = 0; i < matriz.length; i++) {
-            doenca = matriz[i][posDiagnostico];
-            
+        for (String[] matriz2 : matriz) {
+            doenca = matriz2[posDiagnostico];
             if (!porcentagem.containsKey(doenca.toUpperCase())) {
-                for (int j = 0; j < matriz.length; j++)
-                    if (matriz[j][posDiagnostico].equalsIgnoreCase(doenca))
+                for (String[] matriz1 : matriz) {
+                    if (matriz1[posDiagnostico].equalsIgnoreCase(doenca)) {
                         numOcorrencias++;
+                    }
+                }
                 
                 porcentagem.put(doenca.toUpperCase(), (double) numOcorrencias/numPacientes);
             }
@@ -74,6 +75,16 @@ public class QuadroGeralComponent implements IQuadroGeral {
 
         return ocorrencia;
     }
+    
+    @Override
+    public Map<String, Double> porcentagem() {
+        return null;
+    }
+    
+    @Override
+    public Map<String, Integer> ocorrencia() {
+        return null;
+    }
 
     @Override
     public void plotarGrafico(Map<String, Integer> ocorrencia) {
@@ -94,5 +105,15 @@ public class QuadroGeralComponent implements IQuadroGeral {
         } catch(IOException e) {
             System.err.println("Cagou tufdo");
         }
+    }
+
+    @Override
+    public void gravarPorcentagem(Map<String, Double> porcentagem) {
+        
+    }
+
+    @Override
+    public void gravarOcorrencia(Map<String, Integer> ocorrencia) {
+        
     }
 }

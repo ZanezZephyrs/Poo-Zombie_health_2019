@@ -12,8 +12,11 @@ import java.util.Map;
  *
  * @author ra222142
  */
-public interface IQuadroGeral {
-    public Map<String, Double> porcentagem(String matriz[][]);  /* Retorna um dicionário que associa cada doença com a porcentagem de pacientes que a possuem */
-    public Map<String, Integer> ocorrencia(String matriz[][]);  /* Retorna um dicionário que associa cada doença com o número de ocorrências */
-    public void plotarGrafico(Map<String, Integer> ocorrencia); /* Plota um gráfico de barras que relaciona cada doença com o número de ocorrências */
+public interface IQuadroGeral extends IQuadroEspecifico, IArquivoDados {
+    /* Lê o arquivo porcentagem.txt e retorna um dicionário (map) relacionando as porcentagem com as doenças */
+    public Map<String, Double> porcentagem();
+    /* Lê o arquivo ocorrencia.txt e retorna um dicionário (map) relacionando o número de ocorrência com as doenças */
+    public Map<String, Integer> ocorrencia();
+    /* Plota um gráfico de barras que relaciona cada doença com o número de ocorrências */
+    public void plotarGrafico(Map<String, Integer> ocorrencia); 
 }
