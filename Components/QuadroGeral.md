@@ -8,9 +8,9 @@ Objetivo | `Análise de dados`
 Interface | `IQuadroGeral`
 ~~~
 public interface IQuadroGeral {
-    public Map<String, Double> porcentagem(String matriz[][]);  /* Retorna um dicionário que associa cada doença com a porcentagem de pacientes que a possuem */
-    public Map<String, Integer> ocorrencia(String matriz[][]);  /* Retorna um dicionário que associa cada doença com o número de ocorrências */
-    public void plotarGrafico(Map<String, Integer> dicionario); /* Plota um gráfico de barras que relaciona cada doença com o número de ocorrências */
+    public Map<String, Double> porcentagem(String matriz[][]);
+    public Map<String, Integer> ocorrencia(String matriz[][]);
+    public void plotarGrafico(Map<String, Integer> dicionario);
 }
 ~~~
 
