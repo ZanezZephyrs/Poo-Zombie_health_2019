@@ -21,9 +21,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
  *
  * @author ra222142
  */
-public class QuadroGeral implements IQuadroGeral {
+public class QuadroGeralComponent implements IQuadroGeral {
     
-    public QuadroGeral() {
+    public QuadroGeralComponent() {
         
     }
 
@@ -31,15 +31,15 @@ public class QuadroGeral implements IQuadroGeral {
     public Map<String, Double> porcentagem(String matriz[][]) {
         Map<String, Double> porcentagem = new HashMap<>();
         int numOcorrencias = 0;
-        int numPacientes = matriz.length - 1 /* não pode incluir o cabeçalho */;
+        int numPacientes = matriz.length;
         int posDiagnostico = matriz[0].length - 1;
         
         String doenca;
-        for (int i = 1; i < matriz.length; i++) {
+        for (int i = 0; i < matriz.length; i++) {
             doenca = matriz[i][posDiagnostico];
             
             if (!porcentagem.containsKey(doenca.toUpperCase())) {
-                for (int j = 1; j < matriz.length; j++)
+                for (int j = 0; j < matriz.length; j++)
                     if (matriz[j][posDiagnostico].equalsIgnoreCase(doenca))
                         numOcorrencias++;
                 
@@ -59,11 +59,11 @@ public class QuadroGeral implements IQuadroGeral {
         int posDiagnostico = matriz[0].length - 1;
         
         String doenca;
-        for (int i = 1; i < matriz.length; i++) {
+        for (int i = 0; i < matriz.length; i++) {
             doenca = matriz[i][posDiagnostico];
             
             if (!ocorrencia.containsKey(doenca.toUpperCase())) {
-                for (int j = 1; j < matriz.length; j++)
+                for (int j = 0; j < matriz.length; j++)
                     if (matriz[j][posDiagnostico].equalsIgnoreCase(doenca))
                         numOcorrencias++;
                 ocorrencia.put(doenca.toUpperCase(), numOcorrencias);
