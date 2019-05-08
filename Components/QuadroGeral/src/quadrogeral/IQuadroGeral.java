@@ -13,7 +13,7 @@ import java.util.Map;
  * @author ra222142
  */
 public interface IQuadroGeral extends IQuadroEspecifico, IArquivoDados {
-    /* Lê o arquivo porcentagem.txt e retorna um dicionário (map) relacionando as porcentagem com as doenças */
+    /* Lê o arquivo ocorrencia.txt e retorna um dicionário (map) relacionando as porcentagem de contaminação total com as respectivas doenças */
     public Map<String, Double> porcentagem();
     /* Lê o arquivo ocorrencia.txt e retorna um dicionário (map) relacionando o número de ocorrência com as doenças */
     public Map<String, Integer> ocorrencia();

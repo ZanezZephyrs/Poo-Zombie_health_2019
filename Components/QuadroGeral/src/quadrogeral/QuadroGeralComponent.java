@@ -6,7 +6,12 @@
 
 package quadrogeral;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -60,13 +65,14 @@ public class QuadroGeralComponent implements IQuadroGeral {
         int posDiagnostico = matriz[0].length - 1;
         
         String doenca;
-        for (int i = 0; i < matriz.length; i++) {
-            doenca = matriz[i][posDiagnostico];
-            
+        for (String[] matriz2 : matriz) {
+            doenca = matriz2[posDiagnostico];
             if (!ocorrencia.containsKey(doenca.toUpperCase())) {
-                for (int j = 0; j < matriz.length; j++)
-                    if (matriz[j][posDiagnostico].equalsIgnoreCase(doenca))
+                for (String[] matriz1 : matriz) {
+                    if (matriz1[posDiagnostico].equalsIgnoreCase(doenca)) {
                         numOcorrencias++;
+                    }
+                }
                 ocorrencia.put(doenca.toUpperCase(), numOcorrencias);
             }
             numOcorrencias = 0;            
@@ -77,13 +83,59 @@ public class QuadroGeralComponent implements IQuadroGeral {
     }
     
     @Override
-    public Map<String, Double> porcentagem() {
-        return null;
+    public Map<String, Double> porcentagem(){
+        Map<String, Double> porcentagem = new HashMap<>();
+        
+        Map<String, Integer> ocorrencia = ocorrencia();
+        
+        Integer casos[] = new Integer[ocorrencia.size()];
+        ocorrencia.values().toArray(casos);
+        
+        String doenca[] = new String[ocorrencia.size()];
+        ocorrencia.keySet().toArray(doenca);
+        
+        for (Integer caso : casos) {
+            System.out.println(caso + ";");
+        }
+        System.out.println("cabou");
+        for (String doenca1 : doenca) {
+            System.out.println(doenca1 + ";");
+        }
+        
+        int totalCasos = 0;
+        for (Integer i : casos)
+            totalCasos += i;
+        
+        System.out.println(totalCasos);
+        
+        for (int i = 0; i < ocorrencia.size(); i++) {
+            System.out.println(i);
+            System.out.println(casos[i]);
+            System.out.println((double)(casos[i]/totalCasos));
+            porcentagem.put(doenca[i], (double) (casos[i]/totalCasos));
+        }
+        return porcentagem;
     }
     
     @Override
     public Map<String, Integer> ocorrencia() {
-        return null;
+        Map<String, Integer> ocorrencia = new HashMap<>();
+        
+        try {
+            try (BufferedReader reader = new BufferedReader(new FileReader("ocorrencia.txt"))) {
+                while (reader.ready()) {
+                    String linha = reader.readLine();
+                    String[] dados = linha.split(":");
+                    ocorrencia.put(dados[0], Integer.parseInt(dados[1]));
+                }
+            }
+
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            e.getStackTrace();
+        } 
+        
+        return ocorrencia;
     }
 
     @Override
@@ -98,22 +150,91 @@ public class QuadroGeralComponent implements IQuadroGeral {
             "Ocorrências", ds, PlotOrientation.VERTICAL, false, true, false);
         
         try {
-            OutputStream arquivo = new FileOutputStream("grafico.png");
-            ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
-            arquivo.close();
+            try (OutputStream arquivo = new FileOutputStream("grafico.png")) {
+                ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
+            }
             System.out.println("Criou arquivo");
         } catch(IOException e) {
-            System.err.println("Cagou tufdo");
+            System.err.println("Não foi possível criar o gráfico.");
+            e.getStackTrace();
         }
     }
 
     @Override
-    public void gravarPorcentagem(Map<String, Double> porcentagem) {
-        
+    public void gravarPorcentagem(Map<String, Double> porcentagem) {        
+        try {
+            File arq = new File("porcentagem.txt");
+            
+            if (!arq.exists())
+                arq.createNewFile();
+            
+            Map<String, Double> porc = porcentagem();
+            porcentagem.replaceAll((t, u) -> {
+                double retorno;
+                if (porc.containsKey(t)) {
+                    retorno = u + porc.get(t);
+                    porc.remove(t);
+                } else
+                    retorno = u;
+                
+                return retorno;
+            });
+            porcentagem.putAll(porc);
+            
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(arq))) {
+                porcentagem.keySet().forEach((valor) -> {
+                    try {
+                        writer.append(valor + ":" + porcentagem.get(valor));                        
+                        writer.newLine();
+                    } catch (IOException ex) {
+                        System.err.println("Não foi possível gravar nesse arquivo.");
+                        ex.getStackTrace();
+                    }
+                });
+            }
+        }
+        catch (IOException ex) {          
+            System.err.println("Não foi possível abrir ou criar o arquivo.");
+            ex.getStackTrace();
+        }
     }
 
     @Override
     public void gravarOcorrencia(Map<String, Integer> ocorrencia) {
-        
+        try {
+            File arq = new File("ocorrencia.txt");
+            
+            if (!arq.exists())
+                arq.createNewFile();
+            
+            Map<String, Integer> ocorr = ocorrencia();
+            ocorrencia.replaceAll((t, u) -> {
+                int retorno;
+                if (ocorr.containsKey(t)) {
+                    retorno = u + ocorr.get(t);
+                    ocorr.remove(t);
+                } else
+                    retorno = u;
+                
+                return retorno;
+            });
+            ocorrencia.putAll(ocorr);
+            
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(arq))) {
+                ocorrencia.keySet().forEach((valor) -> {
+                    try {                        
+                        writer.append(valor + ":" + ocorrencia.get(valor));                        
+                        writer.newLine();
+                    } catch (IOException ex) {
+                        System.err.println("Não foi possível gravar nesse arquivo.");
+                        ex.getStackTrace();
+                    }
+                });
+            }
+        }
+        catch (IOException ex) {          
+            System.err.println("Não foi possível abrir ou criar o arquivo.");
+            ex.getStackTrace();
+        }
     }
 }

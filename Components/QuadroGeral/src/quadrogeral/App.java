@@ -6,6 +6,7 @@
 
 package quadrogeral;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -19,14 +20,12 @@ public class App {
      */
     public static void main(String[] args) {
         IQuadroGeral qg = new QuadroGeralComponent();
-        String a[][] = new String[][] {{"a"},{"b"},{"A"},{"c"},{"B"},{"A"},{"A"},{"B"},{"c"},{"A"},{"C"}};
+        String a[][] = new String[][] {{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"}};
 
-        Map<String, Double> dic = qg.porcentagem(a);
-        dic.keySet().forEach((valor) -> {
-            System.out.println(valor + " " + dic.get(valor));
-        });
-        
-        qg.plotarGrafico(qg.ocorrencia(a));
+        qg.gravarOcorrencia(qg.ocorrencia(a));
+        Map<String, Integer> ocorrencia = qg.ocorrencia();
+        qg.plotarGrafico(ocorrencia);
+        qg.gravarPorcentagem(qg.porcentagem());
     }
     
 }
