@@ -27,6 +27,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author ra222142
  */
 public class QuadroGeralComponent implements IQuadroGeral {
+    public final static String OCORRENCIA = "ocorrencia";
+    
     
     public QuadroGeralComponent() {
         
@@ -54,7 +56,7 @@ public class QuadroGeralComponent implements IQuadroGeral {
             numOcorrencias = 0;            
         }
                 
-
+        porcentagem.put(QuadroGeralComponent.OCORRENCIA, (double) numPacientes);
         return porcentagem;
     }
     
@@ -93,27 +95,15 @@ public class QuadroGeralComponent implements IQuadroGeral {
         
         String doenca[] = new String[ocorrencia.size()];
         ocorrencia.keySet().toArray(doenca);
-        
-        for (Integer caso : casos) {
-            System.out.println(caso + ";");
-        }
-        System.out.println("cabou");
-        for (String doenca1 : doenca) {
-            System.out.println(doenca1 + ";");
-        }
-        
+              
         int totalCasos = 0;
         for (Integer i : casos)
             totalCasos += i;
         
-        System.out.println(totalCasos);
-        
-        for (int i = 0; i < ocorrencia.size(); i++) {
-            System.out.println(i);
-            System.out.println(casos[i]);
-            System.out.println((double)(casos[i]/totalCasos));
+        for (int i = 0; i < ocorrencia.size(); i++)
             porcentagem.put(doenca[i], (double) (casos[i]/totalCasos));
-        }
+        
+        porcentagem.put(QuadroGeralComponent.OCORRENCIA, (double) totalCasos);
         return porcentagem;
     }
     
@@ -143,7 +133,7 @@ public class QuadroGeralComponent implements IQuadroGeral {
         
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
         ocorrencia.keySet().forEach((valor) -> {
-            ds.addValue((double) ocorrencia.get(valor), "", (Comparable) valor);
+            ds.addValue(ocorrencia.get(valor), "", (Comparable) valor);
         });
         // cria o gráfico
         JFreeChart grafico = ChartFactory.createBarChart("Doenças X Ocorrências", "Doenças", 
@@ -168,19 +158,30 @@ public class QuadroGeralComponent implements IQuadroGeral {
             if (!arq.exists())
                 arq.createNewFile();
             
-            Map<String, Double> porc = porcentagem();
-            porcentagem.replaceAll((t, u) -> {
-                double retorno;
-                if (porc.containsKey(t)) {
-                    retorno = u + porc.get(t);
-                    porc.remove(t);
-                } else
-                    retorno = u;
-                
-                return retorno;
-            });
-            porcentagem.putAll(porc);
+            Map<String, Integer> novasOcorrencias = new HashMap<>(porcentagem.size() - 1);
             
+            porcentagem.keySet().forEach((valor) -> {
+                novasOcorrencias.put(valor, (int)(porcentagem.get(valor) * porcentagem.get(QuadroGeralComponent.OCORRENCIA)));
+            });
+            
+            gravarOcorrencia(novasOcorrencias);
+            Map<String, Integer> ocorrencia = ocorrencia();
+            
+            Integer casos[] = new Integer[ocorrencia.size()];
+            ocorrencia.values().toArray(casos);
+
+            String doenca[] = new String[ocorrencia.size()];
+            ocorrencia.keySet().toArray(doenca);
+
+            int totalCasos = 0;
+            for (Integer i : casos)
+                totalCasos += i;
+            
+            porcentagem.clear();
+
+            for (int i = 0; i < ocorrencia.size(); i++) 
+                porcentagem.put(doenca[i], (double) (casos[i]/totalCasos));
+                        
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(arq))) {
                 porcentagem.keySet().forEach((valor) -> {
                     try {

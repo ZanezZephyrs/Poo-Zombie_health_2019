@@ -20,7 +20,7 @@ public class App {
      */
     public static void main(String[] args) {
         IQuadroGeral qg = new QuadroGeralComponent();
-        String a[][] = new String[][] {{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"},{"b"}};
+        String a[][] = new String[][] {{"a"},{"a"},{"b"},{"b"},{"c"},{"c"},{"d"},{"d"},{"e"},{"e"}};
 
         qg.gravarOcorrencia(qg.ocorrencia(a));
         Map<String, Integer> ocorrencia = qg.ocorrencia();
