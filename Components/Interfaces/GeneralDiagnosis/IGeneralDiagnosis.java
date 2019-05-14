@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package generaldiagnosis;
 
 /**
  *
  * @author ra222142
  */
-public interface IDiagnosis {
-    public String[][] percentage(String data[][]);
-    public String[][] occurrence(String data[][]);
+public interface IGeneralDiagnosis extends IDiagnosis {
+    public String[][] percentual();
+    public String[][] occurrence();
+    public void plotChart(); 
 }

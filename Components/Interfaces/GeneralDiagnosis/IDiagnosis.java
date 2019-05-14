@@ -10,6 +10,6 @@ package generaldiagnosis;
  * @author ra222142
  */
 public interface IDiagnosis {
-    public String[][] percentage(String data[][]);
+    public String[][] percentual(String data[][]);
     public String[][] occurrence(String data[][]);
 }
