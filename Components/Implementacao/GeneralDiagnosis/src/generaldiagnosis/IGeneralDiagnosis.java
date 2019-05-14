@@ -11,7 +11,7 @@ package generaldiagnosis;
  * @author ra222142
  */
 public interface IGeneralDiagnosis extends IDiagnosis {
-    public String[][] percentual();
+    public String[][] percentage();
     public String[][] occurrence();
     public void plotChart(); 
 }
