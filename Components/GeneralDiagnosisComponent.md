@@ -5,7 +5,7 @@ Campo | Valor
 Classe | `Poo-Zombie_health_2019.Components.Implementacao.GeneralDiagnosis`
 Autores | `4ZHealth`
 Objetivo | `Análise de dados percentuais e do número de ocorrência das doenças`
-Interface | `IGeneralDiagnosis, IDiagnosis, IDataFile`
+Interface | `IGeneralDiagnosis, IDiagnosis`
 ~~~
 public interface IGeneralDiagnosis extends IDiagnosis {
     public String[][] percentual();
