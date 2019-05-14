@@ -8,7 +8,7 @@ Objetivo | `Análise de dados percentuais e do número de ocorrência das doenç
 Interface | `IGeneralDiagnosis, IDiagnosis`
 ~~~
 public interface IGeneralDiagnosis extends IDiagnosis {
-    public String[][] percentual();
+    public String[][] percentage();
     public String[][] occurrence();
     public void plotChart(); 
 }
@@ -21,7 +21,7 @@ Fornece as relações entre uma doença e os números absoluto e relativo (perce
 
 Método | Objetivo
 -------| --------
-`percentual` | Retorna uma tabela que associa cada doença com a porcentagem de pacientes que foram diagnosticados com tal doença, os dados são fornecidos pelo arquivo texto interno percentual.txt.
+`percentage` | Retorna uma tabela que associa cada doença com a porcentagem de pacientes que foram diagnosticados com tal doença, os dados são fornecidos pelo arquivo texto interno percentual.txt.
 `occurrence` | Retorna uma tabela que associa cada doença com o respectivo número de ocorrências, os dados são fornecidos pelo arquivo texto interno occurrence.txt.
 `plotChart` | Plota dois gráficos de barras. Um relaciona cada doença com o número de ocorrências e o outro relaciona cada doença com o percentual de ocorrência. O resultado é gravado em arquivo de imagem.
 
@@ -30,5 +30,5 @@ Analisa uma tabela de doenças e fornece a relação entre a doença e a porcent
 
 Método | Objetivo
 -------| --------
-`percentual` | Retorna uma tabela que associa cada doença com a porcentagem de pacientes que foram diagnosticados com tal doença, os dados são fornecidos pela matriz `data`.
+`percentage` | Retorna uma tabela que associa cada doença com a porcentagem de pacientes que foram diagnosticados com tal doença, os dados são fornecidos pela matriz `data`.
 `occurrence` | Retorna uma tabela que associa cada doença com o respectivo número de ocorrências, os dados são fornecidos pela matriz `data`.
