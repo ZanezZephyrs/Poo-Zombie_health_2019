@@ -15,7 +15,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import javax.swing.JFileChooser;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -43,16 +42,18 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
     public String[][] percentage() {
         String percentage[][] = null;
         
-        if (read());
+        if (read())        
+            per.toArray(percentage);
         
-        return percentage;
+        return percentage;        
     }
 
     @Override
     public String[][] occurrence() {
         String occurrence[][] = null;
         
-        if (read());
+        if (read())
+            occ.toArray(occurrence);
         
         return occurrence;
     }
@@ -69,11 +70,7 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
             "Ocorrências", ds, PlotOrientation.VERTICAL, false, true, false);
         
         try {
-            if (file == null)
-                file = new File(System.getProperties().getProperty("user.dir")+"/a");
-            JFileChooser fil = new JFileChooser(file.getParent());
-            fil.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            try (OutputStream arquivo = new FileOutputStream(fil.getSelectedFile().getAbsolutePath() + "/occurrence.png")) {
+            try (OutputStream arquivo = new FileOutputStream("occurrence.png")) {
                 ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
             }
             System.out.println("Criou arquivo");
@@ -92,13 +89,7 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
             "Porcentagens", ds, PlotOrientation.VERTICAL, false, true, false);
         
         try {
-            if (file == null)
-                file = new File(System.getProperties().getProperty("user.dir")+"/a");
-            
-            JFileChooser fil = new JFileChooser(file.getParent());
-            fil.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-            try (OutputStream arquivo = new FileOutputStream(fil.getSelectedFile().getAbsolutePath() + "/percentage.png")) {
+            try (OutputStream arquivo = new FileOutputStream("percentage.png")) {
                 ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
             }
             System.out.println("Criou arquivo");
@@ -115,9 +106,32 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
 
     @Override
     public String[][] occurrence(String[][] data) {
-        return data;
+        String oc[][] = new String[2][data[0].length+1];
+        
+        int tot = data.length;
+        int diagPos = data[0].length - 1;
+        int current = 1;
+        
+        oc[0][0] = data[diagPos][0];
+        oc[1][0] = 1 + "";
+        
+        for (int i = 0; i < tot; i++) {
+            for (int j = 0; j < current; j++)
+                if (data[diagPos][i].equalsIgnoreCase(oc[0][j]))
+                    oc[1][j] = (Integer.parseInt(oc[1][j])+1) + "";
+                else {
+                    oc[0][current] = data[diagPos][i];
+                    oc[1][current] = 1 + "";
+                    current++;
+                }
+        }
+        
+        oc[0][oc[0].length-1] = "total";
+        oc[1][oc[0].length-1] = tot + "";
+        
+        return oc;
     }
-    
+        
     private void setFile(String filepath, int operation) throws IOException {
         this.file = new File(filepath);
         
@@ -142,8 +156,8 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
             occ.toArray(ocorrencias);
             
             if (ocorrencias != null) {
-                for (int i = 0; i < ocorrencias.length; i++) {
-                    writer.write(ocorrencias[i][0] + ":" + ocorrencias[i][1]);
+                for (String[] ocorrencia : ocorrencias) {
+                    writer.write(ocorrencia[0] + ":" + ocorrencia[1]);
                     writer.newLine();
                 }
             }
