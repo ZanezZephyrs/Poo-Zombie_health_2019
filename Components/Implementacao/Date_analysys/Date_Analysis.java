@@ -1,4 +1,13 @@
-package Date_analysis;
+package Date_analysys;
+
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -6,13 +15,35 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.awt.Dimension;
+
 
 public class Date_Analysis implements iDate_Analysis {
-	String[] datas;
+	String path;
+	JFreeChart graf;
+	ChartPanel panel;
 	
 
 	public Date_Analysis() {
+		this.path=null;
 	}
+	
+	public Date_Analysis(String path) {
+		this.path=path;
+	}
+	
+	public void setPath(String path) {
+		this.path=path;
+	}
+	
+	public void Reset_data() {
+		File file = new File(path);
+		if(file.exists()) {
+			file.delete();
+		}
+	}
+	
+	
 	
 		
 	/*-----------------------------------------------------------------*/	
@@ -70,7 +101,7 @@ public class Date_Analysis implements iDate_Analysis {
 		
 		/*-----------------------------------------------------------------*/	
 		
-		public String[][] deleteCollum(String[][] matrix, int index) {
+		private String[][] deleteCollum(String[][] matrix, int index) {
 			ArrayList<ArrayList<String>> aux= new ArrayList<ArrayList<String>>();
 			for(int i=0;i<matrix.length;i++) {
 				ArrayList<String> line=new ArrayList<String>();
@@ -91,7 +122,7 @@ public class Date_Analysis implements iDate_Analysis {
 			
 		}
 		
-		public int procura(String[] lista, String linha) {
+		private int procura(String[] lista, String linha) {
 			for(int i=0;i<lista.length;i++) {
 				if(linha.toLowerCase().contains(lista[i].toLowerCase())) {
 					return i;
@@ -101,7 +132,7 @@ public class Date_Analysis implements iDate_Analysis {
 		}
 		
 /*-----------------------------------------------------------------*/	
-		public int N_virgulas(String linha) {
+		private int N_virgulas(String linha) {
 			int total=0;
 			for(int i=0;i<linha.length();i++) {
 				if(linha.charAt(i)==',') {
@@ -113,7 +144,7 @@ public class Date_Analysis implements iDate_Analysis {
 		/*-----------------------------------------------------------------*/	
 
 	@Override
-	public void Armazena(String[][] a, int[] date, String path) {
+	public void Armazena(String[][] a, int month) {
         /*System.out.println(new java.io.File("").getAbsolutePath());*/
         String write;
         boolean novo_arquivo;
@@ -148,7 +179,7 @@ public class Date_Analysis implements iDate_Analysis {
 			  if(novo_arquivo) {
 				
 				  
-				  bw.write("Doenças,"+date[0]+"/"+date[1]+"/"+date[2]);
+				  bw.write("Doenças,"+month);
 				  bw.newLine();
 					  for(int j=0;j<aux[0].length;j++) {
 						  write=aux[0][j]+",";
@@ -162,7 +193,7 @@ public class Date_Analysis implements iDate_Analysis {
 				  write=leitor.readLine();
 				  tam=this.N_virgulas(write);
 				  System.out.println(tam);
-				  write+=","+date[0]+"/"+date[1]+"/"+date[2];
+				  write+=","+month;
 				  bw.write(write);
 				  bw.newLine();
 				  write=leitor.readLine();
@@ -221,7 +252,7 @@ public class Date_Analysis implements iDate_Analysis {
 	
 	
 	@Override
-	public String[][] Request_date_table(String path) {
+	public String[][] Request_date_table() {
 		ArrayList<String[]> res = new ArrayList<String[]>();
 		String[][] matriz=null;
 	    try {
@@ -244,11 +275,86 @@ public class Date_Analysis implements iDate_Analysis {
 	    
 	    return matriz;
 	}
+	
+	
+	private XYDataset create_data(double[] x, ArrayList<double[]> y, ArrayList<String> labels) {
+		DefaultXYDataset dataset=new DefaultXYDataset();
+		
+		
+		for(int i=0;i<y.size();i++) {
+			double [][] mat= {x,y.get(i)};
+			dataset.addSeries(labels.get(i), mat);
+			
+		}
+	
+
+		return dataset;
+		
+	}
+	
+	public ChartPanel request_panel() {
+		return this.panel;
+	}
+	
+	
 
 	@Override
-	public void Plot_date_graph(String path) {
-		// TODO Auto-generated method stub
-		
+	public void Plot_date_graph() {
+		ArrayList<double[]> y = new ArrayList<double[]>();
+		ArrayList<String> labels = new ArrayList<String>();
+		String linha;
+		double[] aux;
+		double[] x;
+	    try {
+		      BufferedReader file = new BufferedReader(new FileReader(path));
+		      linha=file.readLine();
+		      String[] temp=linha.split(",");
+	          x=new double[temp.length-1];
+		      for(int i=1;i<temp.length;i++) {
+		    	  x[i-1]=Double.parseDouble(temp[i]);
+		      }
+		      
+		      
+		      linha=file.readLine();
+
+		      while (linha != null) {
+		          String[] valores = linha.split(",");
+		          aux=new double[valores.length-1];
+		          labels.add(valores[0]);
+		          for(int i=1;i<valores.length;i++) {
+		        	  if(valores[i].equalsIgnoreCase("No_Data")) {
+			        	  aux[i-1]=0;
+
+		        	  }else {
+		        	  aux[i-1]=Double.parseDouble(valores[i]);
+		        	  }
+		        	    
+		          }
+		          y.add(aux);
+		          linha = file.readLine();
+		        }
+		      
+		      
+			    file.close();
+			    XYDataset dados=this.create_data(x, y, labels);
+				this.graf=ChartFactory.createScatterPlot("Progressão de Doenças ao decorrer do tempo","Mês", "Casos Registrados", dados, PlotOrientation.VERTICAL, true, true, true);
+				this.panel=new ChartPanel(graf);
+				this.panel.setPreferredSize(new Dimension(1000,1000));
+				XYPlot plot = (XYPlot) graf.getPlot();
+		        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		        renderer.setSeriesLinesVisible(0, true);
+		        plot.setRenderer(renderer);
+			    Janela_grafico janela=new Janela_grafico(this.panel);
+				janela.setVisible(true);
+			    
+
+
+		      }
+	    catch (IOException erro) {
+		      erro.printStackTrace();
+	    }
+	    
+		    
 	}
 	
 	
