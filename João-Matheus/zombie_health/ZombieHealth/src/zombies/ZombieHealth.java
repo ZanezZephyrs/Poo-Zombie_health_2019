@@ -30,7 +30,7 @@ public class ZombieHealth {
         aPatient.connect(dataset);
 
         // instanciando o componente doutor louco
-        IDoctor cDoctor = new Doctor("Marcos");
+        IDoctor cDoctor = new Doctor("Zumbreide");
 
         // conectando-o ao componente DataSet
         cDoctor.connect(dataset);

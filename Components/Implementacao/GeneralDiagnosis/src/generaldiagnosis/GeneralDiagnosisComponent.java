@@ -7,14 +7,16 @@
 package generaldiagnosis;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -31,7 +33,7 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
     
     private File file;
     private BufferedReader reader;
-    private BufferedWriter writer;
+    private PrintWriter writer;
     private ArrayList<String[]> occ, per;
     
     public GeneralDiagnosisComponent() {
@@ -61,14 +63,15 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
     @Override
     public void plotChart() {
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
+        
         occ.forEach((data) -> {
             ds.addValue(Integer.valueOf(data[1]), "", data[0]);
         });
-     
+
         // cria o gráfico
         JFreeChart grafico = ChartFactory.createBarChart("Doenças X Ocorrências", "Doenças", 
             "Ocorrências", ds, PlotOrientation.VERTICAL, false, true, false);
-        
+
         try {
             try (OutputStream arquivo = new FileOutputStream("occurrence.png")) {
                 ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
@@ -78,8 +81,9 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
             System.err.println("Não foi possível criar o gráfico.");
             e.getStackTrace();
         }
-        
+
         ds.clear();
+       
         per.forEach((data) -> {
             ds.addValue(Integer.valueOf(data[1]), "", data[0]);
         });
@@ -88,7 +92,7 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
         grafico = ChartFactory.createBarChart("Doenças X Porcentagem", "Doenças", 
             "Porcentagens", ds, PlotOrientation.VERTICAL, false, true, false);
         
-        try {
+        try {                       
             try (OutputStream arquivo = new FileOutputStream("percentage.png")) {
                 ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
             }
@@ -101,35 +105,68 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
 
     @Override
     public String[][] percentage(String[][] data) {
-        return data;
+        String oc[][] = occurrence(data);
+        
+        for (int i = 0; i < oc[0].length - 1; i++)
+            oc[1][i] = (100 * Double.parseDouble(oc[1][i]) / Double.parseDouble(oc[1][oc[0].length - 1]) ) + "";
+                 
+        return oc;
     }
 
     @Override
     public String[][] occurrence(String[][] data) {
-        String oc[][] = new String[2][data[0].length+1];
-        
-        int tot = data.length;
-        int diagPos = data[0].length - 1;
-        int current = 1;
-        
-        oc[0][0] = data[diagPos][0];
-        oc[1][0] = 1 + "";
-        
-        for (int i = 0; i < tot; i++) {
-            for (int j = 0; j < current; j++)
-                if (data[diagPos][i].equalsIgnoreCase(oc[0][j]))
-                    oc[1][j] = (Integer.parseInt(oc[1][j])+1) + "";
-                else {
-                    oc[0][current] = data[diagPos][i];
-                    oc[1][current] = 1 + "";
-                    current++;
+        String[] ordenado = new String[4];
+
+        for (String[] data1 : data) {
+            for (int j = 0; j < ordenado.length; j++) {
+                if (ordenado[j] == null) {
+                    ordenado[j] = data1[data[0].length -1];
                 }
+                if (data1[data[0].length - 1].equals(ordenado[j])) {
+                    break;
+                } else if (j == ordenado.length - 1) {
+                    ordenado[j+1] = data1[data[0].length -1];
+                }
+            }
+            if(ordenado[ordenado.length -1] != null){
+                String[] aux = new String[ordenado.length*2];
+                System.arraycopy(ordenado, 0, aux, 0, ordenado.length);
+                ordenado = aux;
+            }
         }
         
-        oc[0][oc[0].length-1] = "total";
-        oc[1][oc[0].length-1] = tot + "";
+        int k = 1;
+        for (String ordenado1 : ordenado) {
+            if (ordenado1 == null) {
+                break;
+            }
+            k++;
+        }
+
+        String[][] lista = new String[2][k];
+
+
+        for(int i = 0; i < lista[0].length; i++)
+            lista[1][i] = "0";
+        System.arraycopy(ordenado, 0, lista[0], 0, k);
+
+        for (int i = 0; i < lista[0].length - 1; i++){
+            for (String[] data1 : data) {
+                if (lista[0][i].equals(data1[data[0].length - 1])) {
+                    lista[1][i] = Integer.toString(Integer.parseInt(lista[1][i]) + 1);
+                }
+            }
+        }
         
-        return oc;
+        int total = 0;
+        for (int i = 0; i < lista[0].length - 1; i++)
+            total += Integer.parseInt(lista[1][i]);
+        
+        lista[0][lista[0].length - 1] = "total";
+        lista[1][lista[0].length - 1] = total + "";
+
+        return lista;
+  
     }
         
     private void setFile(String filepath, int operation) throws IOException {
@@ -140,11 +177,11 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
                 reader = new BufferedReader(new FileReader(file));
                 break;
             case WRITING:
-                writer = new BufferedWriter(new FileWriter(file));
+                writer = new PrintWriter(new FileWriter(file));
                 break;
             default:
                 reader = new BufferedReader(new FileReader(file));
-                writer = new BufferedWriter(new FileWriter(file));
+                writer = new PrintWriter(new FileWriter(file));
         }
     }
 
@@ -156,10 +193,8 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
             occ.toArray(ocorrencias);
             
             if (ocorrencias != null) {
-                for (String[] ocorrencia : ocorrencias) {
-                    writer.write(ocorrencia[0] + ":" + ocorrencia[1]);
-                    writer.newLine();
-                }
+                for (String[] ocorrencia : ocorrencias)
+                    writer.println(ocorrencia[0] + ":" + ocorrencia[1]);
             }
             writer.close();
             
@@ -169,10 +204,8 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
             per.toArray(porcentagens);
             
             if (porcentagens != null) {
-                for (int i = 0; i < porcentagens.length; i++) {
-                    writer.write(porcentagens[i][0] + ":" + ocorrencias[i][1]);
-                    writer.newLine();
-                }
+                for (int i = 0; i < porcentagens.length; i++)
+                    writer.println(porcentagens[i][0] + ":" + ocorrencias[i][1]);
             }
             
             writer.close();
