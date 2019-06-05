@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -26,10 +24,10 @@ import org.jfree.data.category.DefaultCategoryDataset;
 /**
  *
  * @author ra222142
- * @param <Type>
  */
-public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
+public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
     private final int READING = 0, WRITING = 1;
+    private final String FILEPATH = GeneralDiagnosisComponent.class.getResource(".").getPath() + "/";
     
     private File file;
     private BufferedReader reader;
@@ -73,7 +71,7 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
             "Ocorrências", ds, PlotOrientation.VERTICAL, false, true, false);
 
         try {
-            try (OutputStream arquivo = new FileOutputStream("occurrence.png")) {
+            try (OutputStream arquivo = new FileOutputStream(FILEPATH + "occurrence.png")) {
                 ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
             }
             System.out.println("Criou arquivo");
@@ -93,7 +91,7 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
             "Porcentagens", ds, PlotOrientation.VERTICAL, false, true, false);
         
         try {                       
-            try (OutputStream arquivo = new FileOutputStream("percentage.png")) {
+            try (OutputStream arquivo = new FileOutputStream(FILEPATH + "percentage.png")) {
                 ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
             }
             System.out.println("Criou arquivo");
@@ -170,7 +168,7 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
     }
         
     private void setFile(String filepath, int operation) throws IOException {
-        this.file = new File(filepath);
+        this.file = new File(FILEPATH + filepath);
         
         switch (operation) {
             case READING:    
@@ -244,5 +242,9 @@ public class GeneralDiagnosisComponent<Type> implements IGeneralDiagnosis {
             ex.getStackTrace();
             return false;
         }
+    }
+    
+    private void addOccurrence(String[][] oc) {
+        
     }
 }

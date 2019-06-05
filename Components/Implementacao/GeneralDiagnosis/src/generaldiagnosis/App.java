@@ -9,7 +9,6 @@ package generaldiagnosis;
 import data.DataSetComponent;
 import interfaces.IDataSet;
 import java.io.File;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
