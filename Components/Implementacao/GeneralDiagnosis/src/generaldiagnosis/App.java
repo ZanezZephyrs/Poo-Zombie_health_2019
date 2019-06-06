@@ -60,6 +60,7 @@ public class App {
             JOptionPane.showMessageDialog(frame, "Não selecionou nenhum arquivo");
         }
         
+        
         frame.dispose();
     }
     

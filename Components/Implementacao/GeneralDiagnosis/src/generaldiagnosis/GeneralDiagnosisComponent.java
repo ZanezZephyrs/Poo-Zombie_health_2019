@@ -196,18 +196,6 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
             }
             writer.close();
             
-            setFile("percentage.txt", READING);
-            
-            String porcentagens[][] = new String[per.size()][2];
-            per.toArray(porcentagens);
-            
-            if (porcentagens != null) {
-                for (int i = 0; i < porcentagens.length; i++)
-                    writer.println(porcentagens[i][0] + ":" + ocorrencias[i][1]);
-            }
-            
-            writer.close();
-            
             return true;
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
@@ -222,17 +210,13 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
             String linha, dados[];
             while((linha = reader.readLine()) != null) {
                 dados = linha.split(":");
-                
                 occ.add(dados);
-            }
-            
-            reader.close();
-            
-            setFile("percentage.txt", READING);
-            while((linha = reader.readLine()) != null) {
-                dados = linha.split(":");
+                for (int i = 0; i < dados.length - 1; i++){
+                    dados[i] = (String.valueOf( (Float.parseFloat(dados[i])) / (Float.parseFloat(dados[dados.length - 1]))));
+                }
                 per.add(dados);
             }
+            
             
             reader.close();
             
