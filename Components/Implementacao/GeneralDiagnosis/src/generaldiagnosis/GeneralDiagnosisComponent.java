@@ -59,6 +59,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
             System.err.println(ex.getMessage());
             ex.getStackTrace();
         }
+        
         String[][] res = new String[matriz.size()][2];
         for (int i = 0; i < matriz.size(); i++) {
             res[i][0] = matriz.get(i)[0];
@@ -312,9 +313,9 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
             FileWriter arquivo2 = new FileWriter("percentage.txt", false);
             PrintWriter format2 = new PrintWriter(arquivo2);
             for (int i = 0; i < occ.size(); i++){
-                format2.println(occ.get(i)[0]);
+                format2.print(occ.get(i)[0]);
                 format2.print(":");
-                format2.print( String.valueOf( 100 * (Integer.parseInt(occ.get(i)[1]) / Integer.parseInt(occ.get(occ.size() - 1)[1] ))));                
+                format2.println( String.valueOf( 100 * (Integer.parseInt(occ.get(i)[1]) / Integer.parseInt(occ.get(occ.size() - 1)[1] ))));                
             }
             format2.close();
             arquivo2.close();

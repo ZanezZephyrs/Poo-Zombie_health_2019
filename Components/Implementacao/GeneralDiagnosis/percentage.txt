@@ -1,6 +1,5 @@
-viral_infection
-:0zulombriga
-:0bacterial_infection
-:0fight
-:0total
-:100
+viral_infection:0
+zulombriga:0
+bacterial_infection:0
+fight:0
+total:100
