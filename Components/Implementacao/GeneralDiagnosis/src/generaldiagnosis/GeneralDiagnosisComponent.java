@@ -27,33 +27,36 @@ import org.jfree.data.category.DefaultCategoryDataset;
  */
 public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
     private final int READING = 0, WRITING = 1;
-    private final String FILEPATH = GeneralDiagnosisComponent.class.getResource(".").getPath() + "/";
+    private final String FILEPATH = GeneralDiagnosisComponent.class.getResource(".").getPath() + "/occurrece.txt";
     
     private File file;
     private BufferedReader reader;
     private PrintWriter writer;
-    private ArrayList<String[]> occ, per;
+    private ArrayList<String[]> occ = new ArrayList<>();
     
     public GeneralDiagnosisComponent() {
-        
+        read();
     }
 
     @Override
     public String[][] percentage() {
-        String percentage[][] = null;
+        ArrayList<String[]> perc = getPercentage();
+        String percentage[][] = new String[2][perc.size()];
         
-        if (read())        
-            per.toArray(percentage);
+        for (int i = 0; i < percentage.length; i++)
+            for (int j = 0; i < percentage[0].length; i++)
+                percentage[j][i] = perc.get(i)[j];
         
         return percentage;        
     }
 
     @Override
-    public String[][] occurrence() {
-        String occurrence[][] = null;
+    public String[][] occurrence() {       
+        String[][] occurrence = new String[2][occ.size()];
         
-        if (read())
-            occ.toArray(occurrence);
+        for (int i = 0; i < occurrence.length; i++)
+            for (int j = 0; i < occurrence[0].length; i++)
+                occurrence[j][i] = occ.get(i)[j];
         
         return occurrence;
     }
@@ -82,8 +85,10 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
 
         ds.clear();
        
+        ArrayList<String[]> per = getPercentage();
+                
         per.forEach((data) -> {
-            ds.addValue(Integer.valueOf(data[1]), "", data[0]);
+            ds.addValue(Double.valueOf(data[1]), "", data[0]);
         });
      
         // cria o gráfico
@@ -105,9 +110,14 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
     public String[][] percentage(String[][] data) {
         String oc[][] = occurrence(data);
         
-        for (int i = 0; i < oc[0].length - 1; i++)
-            oc[1][i] = (100 * Double.parseDouble(oc[1][i]) / Double.parseDouble(oc[1][oc[0].length - 1]) ) + "";
-                 
+        int last = oc[0].length - 1;
+        
+        int tot = Integer.parseInt(oc[1][last]);
+        
+        for (int i = 0; i < oc[0].length - 1; i++) {
+            double valor = Double.parseDouble(oc[1][i]);
+            oc[1][i] = Double.toString(100 * (valor/tot));
+        }
         return oc;
     }
 
@@ -163,37 +173,33 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         lista[0][lista[0].length - 1] = "total";
         lista[1][lista[0].length - 1] = total + "";
 
-        return lista;
-  
+        addOccurrence(lista);
+        
+        return lista;  
     }
         
-    private void setFile(String filepath, int operation) throws IOException {
-        this.file = new File(FILEPATH + filepath);
-        
+    private void prepareFile(int operation) throws IOException {       
         switch (operation) {
             case READING:    
-                reader = new BufferedReader(new FileReader(file));
+                reader = new BufferedReader(new FileReader(FILEPATH));
                 break;
             case WRITING:
-                writer = new PrintWriter(new FileWriter(file));
+                writer = new PrintWriter(new FileWriter(FILEPATH));
                 break;
             default:
-                reader = new BufferedReader(new FileReader(file));
-                writer = new PrintWriter(new FileWriter(file));
+                reader = new BufferedReader(new FileReader(FILEPATH));
+                writer = new PrintWriter(new FileWriter(FILEPATH));
         }
     }
 
     private boolean write() {
         try {
-            setFile("occurrece.txt", WRITING);
+            prepareFile(WRITING);
             
-            String ocorrencias[][] = new String[occ.size()][2];
-            occ.toArray(ocorrencias);
+            occ.forEach((o) -> {
+                writer.println(o[0] + ":" + o[1]);
+            });
             
-            if (ocorrencias != null) {
-                for (String[] ocorrencia : ocorrencias)
-                    writer.println(ocorrencia[0] + ":" + ocorrencia[1]);
-            }
             writer.close();
             
             return true;
@@ -206,18 +212,11 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
 
     private boolean read() {
         try {
-            setFile("occurrence.txt", READING);
-            String linha, dados[];
-            while((linha = reader.readLine()) != null) {
-                dados = linha.split(":");
-                occ.add(dados);
-                for (int i = 0; i < dados.length - 1; i++){
-                    dados[i] = (String.valueOf( (Float.parseFloat(dados[i])) / (Float.parseFloat(dados[dados.length - 1]))));
-                }
-                per.add(dados);
-            }
+            prepareFile(READING);
             
-            
+            for (String linha = reader.readLine(); linha != null; linha = reader.readLine())
+                occ.add(linha.split(":"));
+                                   
             reader.close();
             
             return true;
@@ -228,7 +227,26 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         }
     }
     
-    private void addOccurrence(String[][] oc) {
+    private ArrayList<String[]> getPercentage() {
+        ArrayList<String[]> perc = new ArrayList<>();
+        
+        int last = occ.size() - 1;
+        int tot = Integer.parseInt(occ.get(last)[1]);
+        
+        String[] dados;
+        for (int i = 0; i < last; i++) {
+            dados = new String[2];
+            dados[0] = occ.get(i)[0];
+            dados[1] = Double.toString((100 * Double.parseDouble(occ.get(i)[1])/tot));
+            perc.add(dados);
+        }
+                    
+        perc.add(occ.get(last));
+        
+        return perc;
+    }
+    
+    private void addOccurrence(String[][] oc) {        
         
     }
 }
