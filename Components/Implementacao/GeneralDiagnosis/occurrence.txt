@@ -1,0 +1,5 @@
+viral_infection:133
+zulombriga:115
+bacterial_infection:130
+fight:122
+total:500

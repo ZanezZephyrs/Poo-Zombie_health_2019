@@ -60,13 +60,12 @@ public class App {
                     System.out.println();
                 }
                 
+                
 
                 System.out.println("\nOCORRENCIAS interna");
                 ola = gd.occurrence();
-                for (String[] ola1 : ola) {
-                    for (String ola2 : ola1)
-                        System.out.print(ola2 + " | ");
-                    System.out.println();
+                for (int i = 0; i < gd.occurrence().length; i++) {
+                    System.out.println( gd.occurrence()[i][0] + " " + gd.occurrence()[i][1] );
                 }
                 
                 

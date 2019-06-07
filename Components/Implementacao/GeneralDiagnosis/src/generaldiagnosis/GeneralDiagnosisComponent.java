@@ -29,38 +29,70 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
     private final int READING = 0, WRITING = 1;
     private final String FILEPATH ="occurrence.txt";
     
+    private File arqocc;
+    private File arqpor;
+    
     private File file;
     private BufferedReader reader;
     private PrintWriter writer;
     private ArrayList<String[]> occ = new ArrayList<>();
     
     public GeneralDiagnosisComponent() {
-        
-        if(!read()){
-            write();
-        }
+        ResetAllData();
     }
 
     @Override
     public String[][] percentage() {
-        ArrayList<String[]> perc = getPercentage();
-        String percentage[][] = new String[2][perc.size()];
+        ArrayList<String[]> matriz = new ArrayList<String[]>();
         
-        for (int i = 0; i < percentage.length; i++)
-            for (int j = 0; i < percentage[0].length; i++)
-                percentage[j][i] = perc.get(i)[j];
+        try {
+            BufferedReader read =  new BufferedReader(new FileReader("percentage.txt"));
+            String linha = read.readLine();
+            while(linha != null){
+                String[] Args = linha.split(":");
+                matriz.add(Args); 
+                System.out.println(Args[0] + " " + Args[1]);
+                linha = read.readLine();
+            }
+                
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+            ex.getStackTrace();
+        }
+        String[][] res = new String[matriz.size()][2];
+        for (int i = 0; i < matriz.size(); i++) {
+            res[i][0] = matriz.get(i)[0];
+            res[i][1] = matriz.get(i)[1];
+        }
         
-        return percentage;        
+        return res;       
     }
 
     @Override
     public String[][] occurrence() {
-        String[][] occurrence = new String[2][occ.size()];
-        for (int i = 0; i < occurrence.length; i++)
-            for (int j = 0; i < occurrence[0].length; i++)
-                occurrence[j][i] = occ.get(i)[j]; 
+        String[][] matriz = new String[0][2];
         
-        return occurrence;
+        try {
+            BufferedReader read =  new BufferedReader(new FileReader("occurrence.txt"));
+
+            while(read.ready()){
+                String linha = read.readLine();
+                String[] Args = linha.split(":");
+                String[][] aux = new String[matriz.length + 1][2];
+                for(int i = 0; i < matriz.length; i++){
+                    aux[i][0] = matriz[i][0];
+                    aux[i][1] = matriz[i][1];
+                }
+                aux[matriz.length] = Args;
+                matriz = aux;
+            }
+                
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+            ex.getStackTrace();
+        }
+        
+        return matriz;
     }
 
     @Override
@@ -120,7 +152,6 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
             double valor = Double.parseDouble(oc[1][i]);
             oc[1][i] = Double.toString(100 * (valor/tot));
         }
-        
         return oc;
     }
 
@@ -175,9 +206,10 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         
         lista[0][lista[0].length - 1] = "total";
         lista[1][lista[0].length - 1] = total + "";
+        
 
         addOccurrence(lista);
-        write();
+        Save();
         return lista;  
     }
         
@@ -194,25 +226,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
                 writer = new PrintWriter(new FileWriter(FILEPATH));
         }
     }
-
-    private boolean write() {
-        try {
-            prepareFile(WRITING);
-            
-            occ.forEach((o) -> {
-                writer.println(o[0] + ":" + o[1]);
-            });
-            
-            writer.close();
-            
-            return true;
-        } catch (IOException ex) {
-            System.err.println(ex.getMessage());
-            ex.getStackTrace();
-            return false;
-        }
-    }
-
+    
     private boolean read() {
         try {
             prepareFile(READING);
@@ -250,12 +264,82 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         return perc;
     }
     
+    /**
+     *
+     */
+    public void Save(){
+        try {
+            BufferedReader aocc = new BufferedReader(new FileReader("occurrence.txt"));
+            boolean a = false;
+            String[] last = new String[1];
+            if (!occ.isEmpty()){
+                a = true;
+                last = occ.get(occ.size() - 1);
+                occ.remove(occ.size() - 1);
+            }
+            
+            if(arqocc.exists() ){
+                while(aocc.ready()){
+                    String linha = aocc.readLine();
+                    String[] Args = linha.split(":");
+                    for (int i = 0; i < occ.size(); i++){
+                        if( Args[0] == occ.get(i)[0] ){
+                            occ.get(i)[1] = String.valueOf( Integer.parseInt(occ.get(i)[1]) + Integer.parseInt(Args[0]) );
+                            break;
+                        }
+                        if (i == occ.size() - 1){
+                            occ.add(Args);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (a){
+                occ.add(last);
+            }
+            
+            
+            FileWriter arquivo = new FileWriter("occurrence.txt", false);
+            PrintWriter format = new PrintWriter(arquivo);
+            for (int i = 0; i < occ.size(); i++){
+                format.print(occ.get(i)[0]);
+                format.print(":");
+                format.println(occ.get(i)[1]);         
+            }
+            format.close();
+            arquivo.close();
+        
+            FileWriter arquivo2 = new FileWriter("percentage.txt", false);
+            PrintWriter format2 = new PrintWriter(arquivo2);
+            for (int i = 0; i < occ.size(); i++){
+                format2.println(occ.get(i)[0]);
+                format2.print(":");
+                format2.print( String.valueOf( 100 * (Integer.parseInt(occ.get(i)[1]) / Integer.parseInt(occ.get(occ.size() - 1)[1] ))));                
+            }
+            format2.close();
+            arquivo2.close();
+
+        
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+            ex.getStackTrace();
+        }
+        
+        occ.clear();
+    }
+    
+    private void ResetAllData(){
+        arqocc = new File("occorrences.txt");
+        arqpor = new File("porcentages.txt");
+    }
+    
     private void addOccurrence(String[][] oc) { 
-        for(int i = 0; i < oc.length; i++){
+        for(int i = 0; i < oc[0].length; i++){
             String[] a = new String[2];
             a[0] = oc[0][i];
             a[1] = oc[1][i];
             occ.add(a);
+            System.out.println(oc[0][i] + " " + oc[1][i]);
         } 
     }
     
