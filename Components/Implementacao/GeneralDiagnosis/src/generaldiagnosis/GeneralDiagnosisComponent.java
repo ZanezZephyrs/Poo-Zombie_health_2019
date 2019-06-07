@@ -177,7 +177,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         lista[1][lista[0].length - 1] = total + "";
 
         addOccurrence(lista);
-        
+        write();
         return lista;  
     }
         
@@ -217,7 +217,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         try {
             prepareFile(READING);
             
-            
+            occ.clear();
             for (String linha = reader.readLine(); linha != null; linha = reader.readLine())
                 occ.add(linha.split(":"));
                                    
