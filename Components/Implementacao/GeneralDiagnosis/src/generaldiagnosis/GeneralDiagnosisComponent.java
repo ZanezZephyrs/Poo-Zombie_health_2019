@@ -27,7 +27,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  */
 public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
     private final int READING = 0, WRITING = 1;
-    private final String FILEPATH = GeneralDiagnosisComponent.class.getResource(".").getPath() + "/occurrece.txt";
+    private final String FILEPATH ="occurrence.txt";
     
     private File file;
     private BufferedReader reader;
@@ -35,7 +35,10 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
     private ArrayList<String[]> occ = new ArrayList<>();
     
     public GeneralDiagnosisComponent() {
-        read();
+        
+        if(!read()){
+            write();
+        }
     }
 
     @Override
@@ -51,12 +54,11 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
     }
 
     @Override
-    public String[][] occurrence() {       
+    public String[][] occurrence() {
         String[][] occurrence = new String[2][occ.size()];
-        
         for (int i = 0; i < occurrence.length; i++)
             for (int j = 0; i < occurrence[0].length; i++)
-                occurrence[j][i] = occ.get(i)[j];
+                occurrence[j][i] = occ.get(i)[j]; 
         
         return occurrence;
     }
@@ -118,13 +120,14 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
             double valor = Double.parseDouble(oc[1][i]);
             oc[1][i] = Double.toString(100 * (valor/tot));
         }
+        
         return oc;
     }
 
     @Override
     public String[][] occurrence(String[][] data) {
         String[] ordenado = new String[4];
-
+        
         for (String[] data1 : data) {
             for (int j = 0; j < ordenado.length; j++) {
                 if (ordenado[j] == null) {
@@ -214,6 +217,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         try {
             prepareFile(READING);
             
+            
             for (String linha = reader.readLine(); linha != null; linha = reader.readLine())
                 occ.add(linha.split(":"));
                                    
@@ -246,7 +250,14 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         return perc;
     }
     
-    private void addOccurrence(String[][] oc) {        
-        
+    private void addOccurrence(String[][] oc) { 
+        for(int i = 0; i < oc.length; i++){
+            String[] a = new String[2];
+            a[0] = oc[0][i];
+            a[1] = oc[1][i];
+            occ.add(a);
+        } 
     }
+    
+    
 }

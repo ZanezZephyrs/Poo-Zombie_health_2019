@@ -32,7 +32,7 @@ public class App {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         try {
-/*            JFileChooser file = new JFileChooser();
+            JFileChooser file = new JFileChooser();
             file.setFileSelectionMode(JFileChooser.FILES_ONLY);
             FileFilter csv = new FileNameExtensionFilter("CSV", "csv");
             file.addChoosableFileFilter(csv);
@@ -40,7 +40,7 @@ public class App {
             file.setAcceptAllFileFilterUsed(false);
             file.showOpenDialog(frame);
             File f = file.getSelectedFile();
-*/File f = new File("C:\\Users\\Matheus\\Desktop\\MC322\\Poo-Zombie_health_2019-Grupo-4ZHealth\\Components\\Implementacao\\GeneralDiagnosis\\src\\data\\tables\\zombie-health-new-cases20.csv");
+
             if (f != null) {
                 dataset.setDataSource(f.getAbsolutePath());
 
@@ -59,9 +59,19 @@ public class App {
                         System.out.print(ola2 + " | ");
                     System.out.println();
                 }
+                
 
                 System.out.println("\nOCORRENCIAS interna");
                 ola = gd.occurrence();
+                for (String[] ola1 : ola) {
+                    for (String ola2 : ola1)
+                        System.out.print(ola2 + " | ");
+                    System.out.println();
+                }
+                
+                
+                System.out.println("\nPERCENTAGE interna");
+                ola = gd.percentage();
                 for (String[] ola1 : ola) {
                     for (String ola2 : ola1)
                         System.out.print(ola2 + " | ");
