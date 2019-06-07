@@ -43,7 +43,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
 
     @Override
     public String[][] percentage() {
-        ArrayList<String[]> matriz = new ArrayList<String[]>();
+        ArrayList<String[]> matriz = new ArrayList<>();
         
         try {
             BufferedReader read =  new BufferedReader(new FileReader("percentage.txt"));
@@ -151,7 +151,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         
         for (int i = 0; i < oc[0].length - 1; i++) {
             double valor = Double.parseDouble(oc[1][i]);
-            oc[1][i] = Double.toString(100 * (valor/tot));
+            oc[1][i] = Double.toString(100 * (valor/ (double) tot));
         }
         return oc;
     }
@@ -256,7 +256,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         for (int i = 0; i < last; i++) {
             dados = new String[2];
             dados[0] = occ.get(i)[0];
-            dados[1] = Double.toString((100 * Double.parseDouble(occ.get(i)[1])/tot));
+            dados[1] = Double.toString((100 * Double.parseDouble(occ.get(i)[1])/ (double) tot));
             perc.add(dados);
         }
                     
@@ -284,7 +284,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
                     String linha = aocc.readLine();
                     String[] Args = linha.split(":");
                     for (int i = 0; i < occ.size(); i++){
-                        if( Args[0] == occ.get(i)[0] ){
+                        if( Args[0].equalsIgnoreCase(occ.get(i)[0]) ){
                             occ.get(i)[1] = String.valueOf( Integer.parseInt(occ.get(i)[1]) + Integer.parseInt(Args[0]) );
                             break;
                         }
@@ -315,7 +315,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
             for (int i = 0; i < occ.size(); i++){
                 format2.print(occ.get(i)[0]);
                 format2.print(":");
-                format2.println( String.valueOf( 100 * (Integer.parseInt(occ.get(i)[1]) / Integer.parseInt(occ.get(occ.size() - 1)[1] ))));                
+                format2.println( Double.toString( 100 * (Double.parseDouble(occ.get(i)[1]) / Double.parseDouble(occ.get(occ.size() - 1)[1] ))));                
             }
             format2.close();
             arquivo2.close();
