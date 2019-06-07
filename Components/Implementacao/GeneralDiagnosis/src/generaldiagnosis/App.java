@@ -32,7 +32,7 @@ public class App {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         try {
-            JFileChooser file = new JFileChooser();
+            JFileChooser file = new JFileChooser(App.class.getResource("../data/tables").getPath());
             file.setFileSelectionMode(JFileChooser.FILES_ONLY);
             FileFilter csv = new FileNameExtensionFilter("CSV", "csv");
             file.addChoosableFileFilter(csv);
@@ -45,6 +45,7 @@ public class App {
                 dataset.setDataSource(f.getAbsolutePath());
 
                 System.out.println("OCORRENCIAS mat");
+                System.out.println("---------------");
                 String ola[][] = gd.occurrence(dataset.requestInstances());
                 for (String[] ola1 : ola) {
                     for (String ola2 : ola1)
@@ -53,6 +54,7 @@ public class App {
                 }
 
                 System.out.println("\nPORCENTAGENS mat");
+                System.out.println("----------------");
                 ola = gd.percentage(dataset.requestInstances());
                 for (String[] ola1 : ola) {
                     for (String ola2 : ola1)
@@ -63,19 +65,26 @@ public class App {
                 
 
                 System.out.println("\nOCORRENCIAS interna");
+                System.out.println("-------------------");
                 ola = gd.occurrence();
-                for (int i = 0; i < gd.occurrence().length; i++) {
-                    System.out.println( gd.occurrence()[i][0] + " " + gd.occurrence()[i][1] );
+                for (String[] ola1 : ola) {
+                    for (String ola2: ola1)
+                        System.out.print( ola2 + " | ");
+                    System.out.println();
                 }
                 
                 
                 System.out.println("\nPERCENTAGE interna");
+                System.out.println("------------------");
                 ola = gd.percentage();
                 for (String[] ola1 : ola) {
                     for (String ola2 : ola1)
                         System.out.print(ola2 + " | ");
                     System.out.println();
                 }
+                
+                System.out.println("\n");
+                gd.plotChart();
 
             } else {
                 JOptionPane.showMessageDialog(frame, "Não selecionou nenhum arquivo");

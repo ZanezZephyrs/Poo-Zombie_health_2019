@@ -50,10 +50,10 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
             String linha = read.readLine();
             while(linha != null){
                 String[] Args = linha.split(":");
-                matriz.add(Args); 
-                System.out.println(Args[0] + " " + Args[1]);
+                matriz.add(Args);
                 linha = read.readLine();
             }
+            read.close();
                 
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
@@ -88,6 +88,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
                 matriz = aux;
             }
                 
+            read.close();
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
             ex.getStackTrace();
@@ -98,46 +99,62 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
 
     @Override
     public void plotChart() {
-        DefaultCategoryDataset ds = new DefaultCategoryDataset();
-        
-        occ.forEach((data) -> {
-            ds.addValue(Integer.valueOf(data[1]), "", data[0]);
-        });
-
-        // cria o gráfico
-        JFreeChart grafico = ChartFactory.createBarChart("Doenças X Ocorrências", "Doenças", 
-            "Ocorrências", ds, PlotOrientation.VERTICAL, false, true, false);
-
         try {
-            try (OutputStream arquivo = new FileOutputStream(FILEPATH + "occurrence.png")) {
-                ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
-            }
-            System.out.println("Criou arquivo");
-        } catch(IOException e) {
-            System.err.println("Não foi possível criar o gráfico.");
-            e.getStackTrace();
-        }
+            DefaultCategoryDataset ds = new DefaultCategoryDataset();
 
-        ds.clear();
-       
-        ArrayList<String[]> per = getPercentage();
-                
-        per.forEach((data) -> {
-            ds.addValue(Double.valueOf(data[1]), "", data[0]);
-        });
-     
-        // cria o gráfico
-        grafico = ChartFactory.createBarChart("Doenças X Porcentagem", "Doenças", 
-            "Porcentagens", ds, PlotOrientation.VERTICAL, false, true, false);
-        
-        try {                       
-            try (OutputStream arquivo = new FileOutputStream(FILEPATH + "percentage.png")) {
-                ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
+            BufferedReader read =  new BufferedReader(new FileReader("occurrence.txt"));
+
+            while(read.ready()){
+                String linha = read.readLine();
+                String[] args = linha.split(":");
+                if (!args[0].equalsIgnoreCase("total"))
+                    ds.addValue(Integer.parseInt(args[1]), "", args[0]);
             }
-            System.out.println("Criou arquivo");
-        } catch(IOException e) {
-            System.err.println("Não foi possível criar o gráfico.");
-            e.getStackTrace();
+            read.close();
+            // cria o gráfico
+            JFreeChart grafico = ChartFactory.createBarChart("Doenças X Ocorrências", "Doenças", 
+                "Ocorrências", ds, PlotOrientation.VERTICAL, false, true, false);
+
+            try {
+                try (OutputStream arquivo = new FileOutputStream("occurrence.png")) {
+                    ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
+                }
+                System.out.println("Criou arquivo");
+            } catch(IOException e) {
+                System.err.println("Não foi possível criar o gráfico.");
+                e.getStackTrace();
+            }
+
+            ds.clear();
+
+            read =  new BufferedReader(new FileReader("percentage.txt"));
+            
+            int tot=0;
+            while(read.ready()){
+                String linha = read.readLine();
+                String[] args = linha.split(":");
+                if (!args[0].equalsIgnoreCase("total"))
+                    ds.addValue(Double.parseDouble(args[1]), "", args[0]);
+                else
+                    tot = Integer.parseInt(args[1]);
+            }
+          
+            // cria o gráfico
+            grafico = ChartFactory.createBarChart("Doenças X Porcentagem\n(Total: "+tot+")", "Doenças", 
+                "Porcentagens ", ds, PlotOrientation.VERTICAL, false, false, false);
+
+            try {                       
+                try (OutputStream arquivo = new FileOutputStream("percentage.png")) {
+                    ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
+                }
+                System.out.println("Criou arquivo");
+            } catch(IOException e) {
+                System.err.println("Não foi possível criar o gráfico.");
+                e.getStackTrace();
+            } 
+        } catch (IOException | NumberFormatException ex) {
+            System.err.println("Problema na leitura dos dados.");
+            ex.getStackTrace();
         }
     }
 
@@ -294,6 +311,7 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
                         }
                     }
                 }
+                aocc.close();
             }
             if (a){
                 occ.add(last);
@@ -312,11 +330,15 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
         
             FileWriter arquivo2 = new FileWriter("percentage.txt", false);
             PrintWriter format2 = new PrintWriter(arquivo2);
-            for (int i = 0; i < occ.size(); i++){
+            for (int i = 0; i < occ.size() - 1; i++){
                 format2.print(occ.get(i)[0]);
                 format2.print(":");
                 format2.println( Double.toString( 100 * (Double.parseDouble(occ.get(i)[1]) / Double.parseDouble(occ.get(occ.size() - 1)[1] ))));                
             }
+            format2.print(occ.get(occ.size()-1)[0]);
+            format2.print(":");
+            format2.println(occ.get(occ.size()-1)[1]);
+            
             format2.close();
             arquivo2.close();
 
@@ -340,7 +362,6 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
             a[0] = oc[0][i];
             a[1] = oc[1][i];
             occ.add(a);
-            System.out.println(oc[0][i] + " " + oc[1][i]);
         } 
     }
     

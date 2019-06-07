@@ -4,4 +4,4 @@ Gripe Aviaria:16.400000000000002
 Infecção Bacteriana:15.0
 T-Virus:17.0
 Infecção Viral:18.4
-total:100.0
+total:500
