@@ -1,7 +1,6 @@
-Zulombriga:15.6
-Briga:17.599999999999998
-Gripe Aviaria:16.400000000000002
-Infecção Bacteriana:15.0
-T-Virus:17.0
-Infecção Viral:18.4
-total:500
+Infecção Bacteriana:25.0
+Infecção Viral:15.0
+Briga:15.0
+T-Virus:20.0
+Zulombriga:25.0
+total:20

@@ -1,7 +1,6 @@
-Zulombriga:78
-Briga:88
-Gripe Aviaria:82
-Infecção Bacteriana:75
-T-Virus:85
-Infecção Viral:92
-total:500
+Infecção Bacteriana:5
+Infecção Viral:3
+Briga:3
+T-Virus:4
+Zulombriga:5
+total:20
