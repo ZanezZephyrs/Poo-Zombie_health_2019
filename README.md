@@ -16,6 +16,7 @@ public interface IGeneralDiagnosis extends IDiagnosis {
 public interface IDiagnosis {
     public String[][] occurrence(String[][] data);
     public String[][] percentage(String[][] data);
+}
 ~~~
 
 ## Detalhamento das Interfaces
