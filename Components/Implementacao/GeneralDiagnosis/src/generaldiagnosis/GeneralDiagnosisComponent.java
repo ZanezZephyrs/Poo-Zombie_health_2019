@@ -6,6 +6,7 @@
 
 package generaldiagnosis;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -119,7 +120,6 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
                 try (OutputStream arquivo = new FileOutputStream("occurrence.png")) {
                     ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
                 }
-                System.out.println("Criou arquivo");
             } catch(IOException e) {
                 System.err.println("Não foi possível criar o gráfico.");
                 e.getStackTrace();
@@ -147,14 +147,13 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
                 try (OutputStream arquivo = new FileOutputStream("percentage.png")) {
                     ChartUtilities.writeChartAsPNG(arquivo, grafico, 550, 400);
                 }
-                System.out.println("Criou arquivo");
             } catch(IOException e) {
                 System.err.println("Não foi possível criar o gráfico.");
                 e.getStackTrace();
             } 
         } catch (IOException | NumberFormatException ex) {
             System.err.println("Problema na leitura dos dados.");
-            ex.getStackTrace();
+    ex.getStackTrace();
         }
     }
 
@@ -352,8 +351,14 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
     }
     
     private void ResetAllData(){
-        arqocc = new File("occorrences.txt");
-        arqpor = new File("porcentages.txt");
+        arqocc = new File("");
+        arqpor = new File("");
+        try{
+            FileWriter a = new FileWriter("occurrence.txt");
+            FileWriter b = new FileWriter("percentage.txt");
+        }catch(IOException erro){
+            
+        }
     }
     
     private void addOccurrence(String[][] oc) { 
