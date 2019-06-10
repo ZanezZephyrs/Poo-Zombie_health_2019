@@ -33,7 +33,7 @@ Portanto, suponhamos a utilização de um arquivo `.csv` como fonte de dados e u
 
 ```
 DataSetComponet ds = new DataSetComponent();
-ds.setDataSource('tutorial\zombie-health-new-cases20.csv'); // caminho do arquivo .csv
+ds.setDataSource('tutorial/zombie-health-new-cases20.csv'); // caminho do arquivo .csv
 
 String data[][] = ds.requestInstances();
 ```
