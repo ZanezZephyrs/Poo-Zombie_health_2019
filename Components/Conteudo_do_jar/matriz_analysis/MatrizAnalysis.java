@@ -62,7 +62,7 @@ public class MatrizAnalysis implements IMatrixAnalysis{
 				if (matrix[i][j].equalsIgnoreCase("t")) {
 					countT ++;
 				}
-				if (matrix[i][j].equals("f")) {
+				if (matrix[i][j].equalsIgnoreCase("f")) {
 					countF ++;
 				}
 			}
