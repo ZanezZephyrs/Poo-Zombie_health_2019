@@ -1,32 +1,31 @@
-package matriz_analisys;
+package matriz_analysis;
 import java.util.ArrayList;
-public class MatrixAnalysis implements IMatrixAnalysis{
+
+import interfaces.IMatrixAnalysis;
+public class MatrizAnalysis implements IMatrixAnalysis{
 	
-	@Override
 	public int mostFalse(String[][] matrix) {
-			ArrayList<Integer> frequency = new ArrayList<Integer>();
-			int i=0, j=0;
-			int count = 0;
-			for (j=0; j<matrix[i].length - 1; j++) {
-				for (i=0; i<matrix.length - 1; i++) {
-					if (matrix[i][j].equals("0")) {
-						count ++;
-					}
+		ArrayList<Integer> frequency = new ArrayList<Integer>();
+		int i=0, j=0;
+		int count = 0;
+		for (j=0; j<matrix[i].length - 1; j++) {
+			for (i=0; i<matrix.length - 1; i++) {
+				if (matrix[i][j].equalsIgnoreCase("f")) {
+					count ++;
 				}
-				frequency.add(count);
-				count = 0;
 			}
-			int mostF = 0;
-			for(Integer valor:frequency) {
-				if (valor>mostF) {
-					mostF=valor;
-				} 
-			}
-			return mostF;
-			
+			frequency.add(count);
+			count = 0;
 		}
+		int mostF = 0;
 
-
+		for(int z=0;z<frequency.size();z++) {
+			if (frequency.get(z)>mostF) {
+				mostF=z;
+			} 
+		}
+		return mostF;
+	}
 	@Override
 	public int mostTrue(String[][] matrix) {
 		ArrayList<Integer> frequency = new ArrayList<Integer>();
@@ -34,21 +33,24 @@ public class MatrixAnalysis implements IMatrixAnalysis{
 		int count = 0;
 		for (j=0; j<matrix[0].length - 1; j++) {
 			for (i=0; i < (matrix.length); i++) {
-				if (matrix[i][j].equals("1")) {
+				if (matrix[i][j].equalsIgnoreCase("t")) {
 					count ++;
 				}
 			}
 			frequency.add(count);
 			count = 0;
 		}
+		
 		int mostT = 0;
-		for(Integer valor:frequency) {
-			if (valor>mostT) {
-				mostT=valor;
+
+		for(int z=0;z<frequency.size();z++) {
+			if (frequency.get(z)>mostT) {
+				mostT=z;
 			} 
 		}
 		return mostT;
 	}
+
 
 	@Override
 	public ArrayList<ArrayList<String>> count(String[][] matrix) {
@@ -57,10 +59,10 @@ public class MatrixAnalysis implements IMatrixAnalysis{
 		for (int j=0; j<matrix[0].length-1; j++) {
 			ArrayList<String> lista = new ArrayList<String>();
 			for (i=0; i<matrix.length; i++) {
-				if (matrix[i][j].equals("1")) {
+				if (matrix[i][j].equalsIgnoreCase("t")) {
 					countT ++;
 				}
-				if (matrix[i][j].equals("0")) {
+				if (matrix[i][j].equals("f")) {
 					countF ++;
 				}
 			}
