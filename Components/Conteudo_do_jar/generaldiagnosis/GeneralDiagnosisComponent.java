@@ -354,8 +354,14 @@ public class GeneralDiagnosisComponent implements IGeneralDiagnosis {
     }
     
     private void ResetAllData(){
-        arqocc = new File("occorrences.txt");
-        arqpor = new File("porcentages.txt");
+        arqocc = new File("");
+        arqpor = new File("");
+        try{
+            FileWriter a = new FileWriter("occurrence.txt");
+            FileWriter b = new FileWriter("percentage.txt");
+        }catch(IOException erro){
+            
+        }
     }
     
     private void addOccurrence(String[][] oc) { 
