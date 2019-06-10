@@ -12,6 +12,11 @@ public interface IGeneralDiagnosis extends IDiagnosis {
     public String[][] occurrence();
     public void plotChart(); 
 }
+
+public interface IDiagnosis {
+    public String[][] occurrence(String[][] data);
+    public String[][] percentage(String[][] data);
+}
 ~~~
 
 ## Detalhamento das Interfaces
