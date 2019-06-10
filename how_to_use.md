@@ -152,5 +152,5 @@ Esse método plota os gráficos de `doença X ocorrência` e `doença X porcenta
 gd.plotChart();
 ~~~
 #### saída:
-![gráfico de ocorrência](tutorial\occurrence.png)<br />
-![gráfico de porcentagem](tutorial\percentage.png)
+![gráfico de ocorrência](tutorial/occurrence.png)<br />
+![gráfico de porcentagem](tutorial/percentage.png)
