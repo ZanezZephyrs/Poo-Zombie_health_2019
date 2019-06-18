@@ -14,7 +14,7 @@ Veja como é **FÁCIL** utilizar nosso componente em seu projeto!
 
 ## 1º Passo:
 
-Para criar uma instância do nosso componente é preciso importar o `.jar` da nossa equipe (Z4Health) e utilizar nossa fábrica de componentes:
+Para criar uma instância do nosso componente é preciso importar o `.jar` da nossa equipe (4ZHealth) e utilizar nossa fábrica de componentes:
 
 ```
 GeneralDiagnosisComponent gd = Zhealth_Factory.createGeneralDiagnosis();
